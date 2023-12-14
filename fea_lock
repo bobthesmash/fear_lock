@@ -1,0 +1,111 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <map>
+
+using namespace std;
+
+struct FearInfo {
+    string subjects;
+    string results;
+};
+
+class FearLibrary {
+private:
+    map<string, FearInfo> fears;
+
+public:
+    void addFear(const string& name, const string& subjects, const string& results) {
+        FearInfo info{subjects, results};
+        fears[name] = info;
+    }
+
+    void displayLibrary() const {
+        cout << "Fear Library:\n";
+        for (const auto& entry : fears) {
+            cout << "Fear: " << entry.first << "\n";
+            cout << "Subjects: " << entry.second.subjects << "\n";
+            cout << "Results: " << entry.second.results << "\n\n";
+        }
+    }
+
+    void addFearManually() {
+        string name, subjects, results;
+
+        cout << "Enter Fear Name: ";
+        cin.ignore();
+        getline(cin, name);
+
+        cout << "Enter Subjects (separated by commas): ";
+        getline(cin, subjects);
+
+        cout << "Enter Results: ";
+        getline(cin, results);
+
+        addFear(name, subjects, results);
+    }
+
+    void searchFear(const string& keyword) const {
+        cout << "Search Results for '" << keyword << "':\n";
+        for (const auto& entry : fears) {
+            if (entry.first.find(keyword) != string::npos ||
+                entry.second.subjects.find(keyword) != string::npos ||
+                entry.second.results.find(keyword) != string::npos) {
+                cout << "Fear: " << entry.first << "\n";
+                cout << "Subjects: " << entry.second.subjects << "\n";
+                cout << "Results: " << entry.second.results << "\n\n";
+            }
+        }
+    }
+
+    void saveDataToFile() const {
+        ofstream outputFile("fear_data.txt");
+        for (const auto& entry : fears) {
+            outputFile << "Fear: " << entry.first << "\n";
+            outputFile << "Subjects: " << entry.second.subjects << "\n";
+            outputFile << "Results: " << entry.second.results << "\n\n";
+        }
+        outputFile.close();
+        cout << "Data saved to 'fear_data.txt'.\n";
+    }
+};
+
+int main() {
+    FearLibrary fearLibrary;
+
+    char choice;
+    do {
+        cout << "Menu:\n";
+        cout << "1. Add Fear\n";
+        cout << "2. Search Fears\n";
+        cout << "3. Save Data\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice (1-4): ";
+        cin >> choice;
+
+        switch (choice) {
+            case '1':
+                fearLibrary.addFearManually();
+                break;
+            case '2': {
+                string searchKeyword;
+                cout << "Enter a keyword to search for in fears: ";
+                cin.ignore();
+                getline(cin, searchKeyword);
+                fearLibrary.searchFear(searchKeyword);
+                break;
+            }
+            case '3':
+                fearLibrary.saveDataToFile();
+                break;
+            case '4':
+                cout << "Exiting the program. Goodbye!\n";
+                break;
+            default:
+                cout << "Invalid choice. Please enter a valid option.\n";
+        }
+
+    } while (choice != '4');
+
+    return 0;
+}
