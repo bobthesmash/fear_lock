@@ -4,7 +4,7 @@
 #include <map>
 
 using namespace std;
-
+// using namespace std;
 struct FearInfo {
     string subjects;
     string results;
